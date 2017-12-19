@@ -1,0 +1,12 @@
+server.port: 8888
+spring:
+ jpa:
+    hibernate:
+      ddl-auto: update
+ datasource:
+    username: root
+    password: mysql
+    url: jdbc:mysql://localhost:3306/student_db
+    
+    
+    
