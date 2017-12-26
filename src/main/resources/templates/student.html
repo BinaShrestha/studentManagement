@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Student Management Page</title>
+	<div th:replace="fragments/header :: header-css" />
+</head>
+<body>
+	<div th:replace="fragments/header :: header" />
+	
+		<h1>Student Management Page</h1>
+<form>
+	<div id="successMessage" style="color: green;"></div>
+	<div class="col-md-4">
+		<div class="from-group">
+			<input type="text" name="firstName" id="firstName" placeholder="Enter First name" class="from-control" />
+			
+		</div>
+		<div class="from-group">
+			<input type="text" name="lastName" id="lastName" placeholder="Enter last name" class="from-control" />
+			
+		</div>
+		<div class="from-group">
+			<input type="text" name="address" id="address" placeholder="address" class="from-control" />
+			
+		</div>
+		<label for="sell">Select Department</label>
+		<select id="select" style="width: 150px; margin-left: 10px;">
+			<option selected="selected" >blank</option>
+		</select>
+	</div>
+</form>
+<button type="Submit" onclick="save()" class="btn btn-primary" style="width: 100px; margin-left: 10px;">Save</button>
+<button type="Submit" class="btn btn-warning" style="width: 100px; margin-left: 10px;">Cancle</button>
+
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var Department=[];
+		var str='';
+		  $.ajax({
+		  	url:"/departments/names",
+		  	type:'Get',
+		  	success: function(response){
+		  		//alert('success');
+		  		$.each(response,function(i,item){
+		  			$("#select").append('<option value="item.value()">'+item+' </option>');
+		  		});
+		  	},
+		  	error:function(response){
+		  		alert('error');
+		  	}
+		  })
+});		  
+		  function save(){
+		  	var student={};
+		  	student.firstName=$('#firstName').val();
+		  	student.lastName=$('#lastName').val();
+		  	student.address=$('#address').val();
+		  	student.departmentName=$('#select').find(':selected').text();
+		  	$.ajax({
+		  		url:"/students",
+		  		type:"POST",
+		  		contentType:"application/json",
+		  		data: JSON.stringify(student),
+		  		dataType:'text',		  		
+		  		success: function(response){
+		  			$('#successMessage').html('<h1>success</h1>');
+		  		},
+		  		error: function(response){
+		  			alert('error');
+		  		}
+		  		
+
+		  	});
+
+
+		  }
+		
+</script>
+
+</body>
+</html>

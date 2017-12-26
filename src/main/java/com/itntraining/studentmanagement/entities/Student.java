@@ -1,26 +1,42 @@
 package com.itntraining.studentmanagement.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
+@Entity
+//@Table(name="student_info")
 public class Student {
 	@Id
 	@GeneratedValue
-	@Column(name="studentId")
+	@Column(name="student_Id")
 	
 private Long studentId;
-	@Column(name="firstName")
+	@Column(name="firstName",nullable=false)
 private String firstName;
-	@Column(name="lastName")
+	@Column(name="lastName",nullable=false)
 private String lastName;
-	//@JoinColumn(name= department_Id)
-	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+        @Column(name="address")
+private String address;
+        @JoinColumn(name="department_Id")
+        @JsonBackReference
+	@ManyToOne
+
 private Department department;
+
+         public String getAddress() {
+           return address;
+        }
+
+        public void setAddress(String address) {
+        this.address = address;
+         }
+
 	public Long getStudentId() {
 		return studentId;
 	}

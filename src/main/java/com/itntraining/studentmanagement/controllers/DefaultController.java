@@ -9,10 +9,22 @@ import com.itntraining.studentmanagement.entities.Department;
 //@RestController
 @Controller
 public class DefaultController {
-@GetMapping("/home")
+@GetMapping({"/home","/"})
 public String getHomePage() {
 	return "home";
 	
+}
+@GetMapping("/department")
+public String getDepartmentPage() {
+	return "department";
+}
+@GetMapping("/about")
+public String getAboutPage() {
+	return "about";
+}
+@GetMapping("/student")
+public String getStudentPage() {
+	return "student";
 }
 	}
 	

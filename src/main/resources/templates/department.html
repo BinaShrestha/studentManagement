@@ -5,8 +5,9 @@
 	<div th:replace="fragments/header :: header-css" />
 </head>
 <body>
-	<div class="container">
+	
 	<div th:replace="fragments/header :: header" />
+	<div class="container">
 <h1> this is department</h1>
 <form class="form-horizontal" id="submitForm">
                 <fieldset>
@@ -20,24 +21,117 @@
 
                         </div>
                         <button type="submit" id="save" class="btn bg-primary"  style="height: 40px; width: 100px; margin-left: 40px;">Save </button>
+
+                        
                     </div>
                 </fieldset>
+ </form>
+                         <button onclick="loadDataTable()"> Show Table</button>
+            <h1>Department Table</h1>
+            <table id="dptlst" class="table table-striped">
+            	<thead>
+            		<tr>
+            			<th>Department Id</th>
+            			<th>Department Name</th>
+            			<th>Number of Student</th>
+            			<th>Action</th>
 
-            </form>
+            		</tr>
+            	</thead>
+            </table>
         </div>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="//cdn.datatables.net/1.9.1/js/jquery.dataTables.min.js"></script>
         <script type="text/javascript">
-        	$(document).ready(function(){
-$('#submitForm').submit(function(event){
-	event.preventDefault();
-	saveDepartment();
-});
+        	
+   function loadDataTable(){
+	        var departments=[];
+	        $.ajax({
+		         url: "/departments",
+		         type: "GET",
+		       success: function(response){
+			     departments=response;
+			var table= $('#dptlst').DataTable({
+			 	 "aaData":departments,
+				 "aoColumns":[
+				     {"mDataProp": "departmentId"},
+				     {"mDataProp": "departmentName"},
+				     {"mDataProp": "size"}
+				  ],
+				  "bDestroy":true
 
-function saveDepartment(){
-var departmentName=$('#departmentName').val();
-alert(departmentName);
-}
-        	});
+		    });
+        $.each(table.find('tbody tr'),function(index,element){
+	        var tr=$(element);
+            var td1=$('<td/>');
+	            td1.html('<button class="btn btn-primary" onclick="edit(this)">Edit</button>')
+	            tr.append(td1);
+	        var td2=$('<td/>');
+	            td2.html('<button class="btn btn-danger" onclick="deleteDepartment(this)"> Delete</button>')
+	            tr.append(td2);
+        });
+               },
+		       error: function(error){
+
+		       }
+	        })
+  }
+  function edit(buttonRef){
+	        //alert('edit clicked');
+	        var button=$(buttonRef);
+	        var tr= button.closest('tr');
+	        var departmentId=tr.find('td:nth-child(1)').text();
+	        var departmentName=tr.find('td:nth-child(2)').text();
+	        //alert(departmentName);
+	            $('#departmentId').val(departmentId);
+	            $('#departmentName').val(departmentName);
+
+  }
+  function deleteDepartment(buttonRef){
+            var button=$(buttonRef);
+	        var tr=button.closest('tr');
+	        var departmentId=tr.find('td:nth-child(1)').text();
+	        //alert(departmentId);
+	        $.ajax({
+		         url:'/departments?departmentId='+departmentId,
+		         type:'DELETE',
+	           success: function(response){
+		         loadDataTable();
+		       }
+	        })
+
+
+  } 
+            $(document).ready(function(){
+            $('#submitForm').submit(function(event){
+	           event.preventDefault();
+	           saveDepartment();
+            });
+  function saveDepartment(){
+            var department={};
+                department.departmentId=$('#departmentId').val();
+                department.departmentName=$('#departmentName').val();
+            alert(department.departmentName);
+            $.ajax({
+	             url: "/departments",
+	             type: "POST",
+	             contentType: "application/json",
+	             data: JSON.stringify(department),
+	             dataType:"json",
+	           success: function(response){
+		    //alert('successfully saved')
+
+	           },
+	           error: function(error){
+		    //alert('error')
+		       loadDataTable();
+
+	           }
+            });
+  }
+
+            });
+        	
         </script>
 </body>
 </html>

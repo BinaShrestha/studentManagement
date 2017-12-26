@@ -16,20 +16,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.itntraining.studentmanagement.entities.Department;
 import com.itntraining.studentmanagement.repositories.DepartmentRepository;
+import com.itntraining.studentmanagement.services.DepartmentService;
 
 @RestController
 public class DepartmentController {
 	@Autowired
 	private DepartmentRepository departmentRepository;
+        @Autowired 
+        private DepartmentService departmentService;
 	@PostMapping("/departments")
 	public ResponseEntity<?> saveDepartment(@RequestBody Department department ){
+            
 		departmentRepository.save(department);
 		return ResponseEntity.ok("saved");
 	}
 	@GetMapping("departments")
 	public ResponseEntity<?>getAllDepartments(){
-		List<Department>departmentList=departmentRepository.findAll();
-		return ResponseEntity.ok(departmentList);
+		//List<Department>departmentList=departmentRepository.findAll();
+		return ResponseEntity.ok(departmentService.findAllDepartments());
 	}
 	@Transactional
 	@PutMapping("/departments")
@@ -45,4 +49,9 @@ public ResponseEntity<?>deleteDepartment(@RequestParam Long departmentId){
 			
 		
 }
+@GetMapping("/departments/names")
+	public ResponseEntity<?>getAllDepartNames(){
+		//List<Department>departmentList=departmentRepository.findAll();
+		return ResponseEntity.ok(departmentService.findAllDepartNames());
+	}
 }
